@@ -1,0 +1,161 @@
+---
+title: "Scrape Covid-19 Cases Data & its Visual Representation in Malaysia with Python & R"
+output: html_notebook
+---
+
+# Check out my COVID Analysis
+
+This is the approach I used. I got the data from this source: [data.humdata](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases)
+
+# Import data
+
+This is where we import data.
+
+```{r}
+
+library(tidyverse)
+
+covid19_confirmed_malaysia_raw <- read_csv("https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_confirmed_global.csv&filename=time_series_covid19_confirmed_global.csv")
+
+```
+
+# Load Libraries
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+# Graph of Confirmed COVID-19 cases in Malaysia
+```{r}
+theme_set(theme_minimal())
+
+covid19_confirmed_malaysia <- covid19_confirmed_malaysia_raw %>%
+  pivot_longer(-c(`Province/State`, `Country/Region`, Lat, Long),
+               names_to = "date",
+               values_to = "confirmed_n"
+  ) %>%
+  select(-c(Lat, Long)) %>%
+  rename(
+    province_state = `Province/State`,
+    country_region = `Country/Region`
+  ) %>%
+  mutate(date = mdy(date)) %>%
+  group_by(country_region, date) %>%
+  summarise(confirmed_n = sum(confirmed_n)) %>%
+  ungroup()
+
+covid19_confirmed_malaysia %>%
+  arrange(date) %>%
+  group_by(country_region) %>% 
+  mutate(new_confirmed_cases = confirmed_n - lag(confirmed_n, default = 0)) %>%
+  ungroup() %>% 
+  filter(country_region == "Malaysia") %>%
+  ggplot(aes(x = date, y = new_confirmed_cases)) +
+  geom_line() +
+  scale_x_date(date_breaks = "5 weeks", date_labels = "%d %b") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Date", y = "New Cases", title = "New Confirmed COVID-19 cases in Malaysia")
+
+
+```
+
+# Import data
+
+This is where we import data.
+
+```{r}
+
+covid19_death_malaysia_raw <- read_csv("https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_deaths_global.csv&filename=time_series_covid19_deaths_global.csv")
+
+```
+
+# Load Libraries
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+# Graph of Death COVID-19 cases in Malaysia
+```{r}
+theme_set(theme_minimal())
+
+covid19_death_malaysia <- covid19_death_malaysia_raw %>%
+  pivot_longer(-c(`Province/State`, `Country/Region`, Lat, Long),
+               names_to = "date",
+               values_to = "death_n"
+  ) %>%
+  select(-c(Lat, Long)) %>%
+  rename(
+    province_state = `Province/State`,
+    country_region = `Country/Region`
+  ) %>%
+  mutate(date = mdy(date)) %>%
+  group_by(country_region, date) %>%
+  summarise(death_n = sum(death_n)) %>%
+  ungroup()
+
+covid19_death_malaysia %>%
+  arrange(date) %>%
+  group_by(country_region) %>% 
+  mutate(new_death_cases = death_n - lag(death_n, default = 0)) %>%
+  ungroup() %>% 
+  filter(country_region == "Malaysia") %>%
+  ggplot(aes(x = date, y = new_death_cases)) +
+  geom_line() +
+  scale_x_date(date_breaks = "5 weeks", date_labels = "%d %b") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Date", y = "New Death Cases", title = "New Death COVID-19 cases in Malaysia")
+
+
+```
+
+# Import data
+
+This is where we import data.
+
+```{r}
+
+covid19_recovered_malaysia_raw <- read_csv("https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_recovered_global.csv&filename=time_series_covid19_recovered_global.csv")
+
+```
+
+# Load Libraries
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+# Graph of Recovered COVID-19 cases in Malaysia
+```{r}
+theme_set(theme_minimal())
+
+covid19_recovered_malaysia <- covid19_recovered_malaysia_raw %>%
+  pivot_longer(-c(`Province/State`, `Country/Region`, Lat, Long),
+               names_to = "date",
+               values_to = "recovered_n"
+  ) %>%
+  select(-c(Lat, Long)) %>%
+  rename(
+    province_state = `Province/State`,
+    country_region = `Country/Region`
+  ) %>%
+  mutate(date = mdy(date)) %>%
+  group_by(country_region, date) %>%
+  summarise(recovered_n = sum(recovered_n)) %>%
+  ungroup()
+
+covid19_recovered_malaysia %>%
+  arrange(date) %>%
+  group_by(country_region) %>% 
+  mutate(new_recovered_cases = recovered_n - lag(recovered_n, default = 0)) %>%
+  ungroup() %>% 
+  filter(country_region == "Malaysia") %>%
+  ggplot(aes(x = date, y = new_recovered_cases)) +
+  geom_line() +
+  scale_x_date(date_breaks = "5 weeks", date_labels = "%d %b") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Date", y = "New Recovered Cases", title = "New Recovered COVID-19 cases in Malaysia")
+
+
+```
+
