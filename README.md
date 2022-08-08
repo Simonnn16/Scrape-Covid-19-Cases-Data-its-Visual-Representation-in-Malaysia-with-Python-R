@@ -1,0 +1,2 @@
+# Scrape-Covid-19-Cases-Data-its-Visual-Representation-in-Malaysia-with-Python-R
+A new virus named a coronavirus (COVID-19) is affecting a lot of people all over the world. The symptoms are ranging from the common cold to severe acute respiratory syndrome. Having access to up-to-date Coronavirus data can be pretty helpful especially as COVID-19 cases of Malaysia continue to rise. In this case, I will show how the COVID-19 is distributed by doing a visual representation in Malaysia.
